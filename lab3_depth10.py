@@ -67,7 +67,7 @@ x = tf.image.resize_images(inputs, (256, 256))
 x = x/255.0
 y = tf.image.resize_images(y_, (256, 256))
 ch= 15 #channel
-depth= 10 #depth
+depth= 7 #depth
 xn = []
 b=tf.Variable(0.0)
 x= tf.layers.conv2d(x, ch, 3, 1, 'same') #FIXME
@@ -83,6 +83,7 @@ for i in range(depth):
     x = tf.nn.relu(x)
     if i < depth-1:
         x = tf.nn.avg_pool(x,[1,2,2,1],[1,2,2,1],'SAME')
+    print(i, 'layer', x.shape)
 for i in range(depth):
     if i>0:
         x = tf.keras.layers.UpSampling2D((2,2))(x)
@@ -124,6 +125,7 @@ for epoch in range(num_epochs):
                 %(epoch+1, num_epochs, str(i).zfill(4), len(dataloader), sess.run(loss,feed_dict={inputs: input, y_: label}),sess.run(b)) )
         if i%300==0:
             print('checkpoint saved')
+            saver.save(sess, './checkpoints/checkpoint_epoch', global_step=epoch+1)
             for i, data in enumerate(dataloader_real, 0):
                 input = data[0].numpy()
                 label = data[1].numpy()
