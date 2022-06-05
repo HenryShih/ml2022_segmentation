@@ -124,14 +124,13 @@ for epoch in range(num_epochs):
             print("[%d/%d][%s/%d] loss: %.4f b: %.4f "\
                 %(epoch+1, num_epochs, str(i).zfill(4), len(dataloader), sess.run(loss,feed_dict={inputs: input, y_: label}),sess.run(b)) )
         if i%300==0:
-            print('checkpoint saved')
-            saver.save(sess, './checkpoints/checkpoint_epoch', global_step=epoch+1)
+            # print('checkpoint saved')
             for i, data in enumerate(dataloader_real, 0):
                 input = data[0].numpy()
                 label = data[1].numpy()
                 sess.run(train,feed_dict={inputs: input, y_: label})
             # saver.save(sess, 'drive/MyDrive/MediaTek_IEE5725_Machine_Learning_Lab3/model/')
-    saver.save(sess, './checkpoints/checkpoint_epoch_', epoch+1)
+    saver.save(sess, './checkpoints/checkpoint_epoch', gobal_step=epoch+1)
     print('checkpoint saved')
     end_time = timeit.default_timer()
     print(f'end of epoch {epoch+1}, spending {int((end_time-start_time)/60)} minites')
