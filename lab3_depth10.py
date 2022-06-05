@@ -113,7 +113,7 @@ sess.run(init)
 
 
 #Set training Epochs, Print the training logs and Save your Checkpoint
-num_epochs = 1
+num_epochs = 100
 for epoch in range(num_epochs):
     start_time = timeit.default_timer()
     for i, data in enumerate(dataloader, 0):
@@ -130,7 +130,7 @@ for epoch in range(num_epochs):
                 label = data[1].numpy()
                 sess.run(train,feed_dict={inputs: input, y_: label})
             # saver.save(sess, 'drive/MyDrive/MediaTek_IEE5725_Machine_Learning_Lab3/model/')
-    saver.save(sess, './checkpoints/checkpoint_epoch', gobal_step=epoch+1)
+    saver.save(sess, './checkpoints/checkpoint_epoch', global_step=epoch+1)
     print('checkpoint saved')
     end_time = timeit.default_timer()
     print(f'end of epoch {epoch+1}, spending {int((end_time-start_time)/60)} minites')
