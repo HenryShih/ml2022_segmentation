@@ -108,8 +108,9 @@ init = tf.global_variables_initializer()
 #session run and restore checkpoint
 sess = tf.Session()
 sess.run(init)
+print('Going to restore:', tf.train.latest_checkpoint('./checkpoints_5'))
 saver.restore(sess,  tf.train.latest_checkpoint('./checkpoints_5'))
-
+print('Restore succeed')
 
 
 #Set training Epochs, Print the training logs and Save your Checkpoint
