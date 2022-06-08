@@ -46,18 +46,18 @@ class DataLoaderSegmentation(data.Dataset):
 
 
 #prepare training/validation datasets
-batch_size = 25
+batch_size = 100
 
 input_path='../ICME2022_Training_Dataset/images' #720/1280
 label_path='../ICME2022_Training_Dataset/labels/class_labels'
 dataset = DataLoaderSegmentation(input_path,label_path,'_lane_line_label_id',transforms.Resize(size=(720,1280)))
-dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
+dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=2)
 
 
 input_path='../ICME2022_Training_Dataset/images_real_world' #1080/1920
 label_path='../ICME2022_Training_Dataset/labels_real_world'
 dataset_real = DataLoaderSegmentation(input_path,label_path,'',transforms.Resize(size=(1080,1920)))
-dataloader_real = torch.utils.data.DataLoader(dataset_real, batch_size=batch_size, shuffle=True)
+dataloader_real = torch.utils.data.DataLoader(dataset_real, batch_size=batch_size, shuffle=True, num_workers=2)
 
 
 #design the network
@@ -99,7 +99,7 @@ outputs = tf.argmax(outputs,-1)
 #set the hyperparameters
 loss=tf.nn.softmax_cross_entropy_with_logits_v2(logits=out,labels=y)
 loss=tf.reduce_mean(loss)
-optimizer = tf.train.AdamOptimizer(learning_rate = 0.00001)
+optimizer = tf.train.AdamOptimizer(learning_rate = 0.000001)
 train = optimizer.minimize(loss+0.0005*b)
 saver=tf.train.Saver()
 init = tf.global_variables_initializer()
@@ -108,7 +108,7 @@ init = tf.global_variables_initializer()
 #session run and restore checkpoint
 sess = tf.Session()
 sess.run(init)
-# saver.restore(sess, '/content/MediaTek_IEE5725_Machine_Learning_Lab3/model/')
+saver.restore(sess,  tf.train.latest_checkpoint('./checkpoints_5'))
 
 
 
@@ -130,7 +130,7 @@ for epoch in range(num_epochs):
                 label = data[1].numpy()
                 sess.run(train,feed_dict={inputs: input, y_: label})
             # saver.save(sess, 'drive/MyDrive/MediaTek_IEE5725_Machine_Learning_Lab3/model/')
-    saver.save(sess, './checkpoints/checkpoint_epoch', global_step=epoch+1)
+    saver.save(sess, './checkpoints_5/checkpoint_epoch', global_step=epoch+1)
     print('checkpoint saved')
     end_time = timeit.default_timer()
     print(f'end of epoch {epoch+1}, spending {int((end_time-start_time)/60)} minites')
