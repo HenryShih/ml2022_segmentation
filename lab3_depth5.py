@@ -46,18 +46,18 @@ class DataLoaderSegmentation(data.Dataset):
 
 
 #prepare training/validation datasets
-batch_size = 100
+batch_size = 75
 
 input_path='../ICME2022_Training_Dataset/images' #720/1280
 label_path='../ICME2022_Training_Dataset/labels/class_labels'
 dataset = DataLoaderSegmentation(input_path,label_path,'_lane_line_label_id',transforms.Resize(size=(720,1280)))
-dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=2)
+dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=0)
 
 
 input_path='../ICME2022_Training_Dataset/images_real_world' #1080/1920
 label_path='../ICME2022_Training_Dataset/labels_real_world'
 dataset_real = DataLoaderSegmentation(input_path,label_path,'',transforms.Resize(size=(1080,1920)))
-dataloader_real = torch.utils.data.DataLoader(dataset_real, batch_size=batch_size, shuffle=True, num_workers=2)
+dataloader_real = torch.utils.data.DataLoader(dataset_real, batch_size=batch_size, shuffle=True, num_workers=0)
 
 
 #design the network
@@ -111,7 +111,7 @@ sess.run(init)
 print('Going to restore:', tf.train.latest_checkpoint('./checkpoints_5'))
 saver.restore(sess,  tf.train.latest_checkpoint('./checkpoints_5'))
 print('Restore succeed')
-
+optimizer = tf.train.AdamOptimizer(learning_rate = 0.000001)
 
 #Set training Epochs, Print the training logs and Save your Checkpoint
 num_epochs = 100
